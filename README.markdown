@@ -85,7 +85,7 @@ like `on`, but fickle.
 ```ruby
 frob = Frob.new
 
-frob.on :twiddle do
+frob.once :twiddle do
   p :twiddled!
 end
 

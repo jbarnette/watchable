@@ -11,7 +11,7 @@ also incorporated a few extras from node.js' [EventEmitter][ee],
 [jq]: http://api.jquery.com/on
 [be]: http://documentcloud.github.com/backbone/#Events
 
-## Example
+## Examples
 
 ### Fixtures
 

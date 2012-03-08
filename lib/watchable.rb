@@ -4,8 +4,8 @@ module Watchable
   end
 
   def fire event, *args
-    watchers[event].each { |w| w && w.call(*args) }
-    watchers[:all].each { |w| w && w.call(event, *args) }
+    watchers[event].each { |w| w.call *args        }
+    watchers[:all].each  { |w| w.call event, *args }
 
     self
   end

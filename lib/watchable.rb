@@ -21,7 +21,7 @@ module Watchable
       off event, wrapper
       (callable || block).call *args
     end
-    
+
     on event, wrapper
   end
 

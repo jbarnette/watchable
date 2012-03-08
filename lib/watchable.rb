@@ -10,16 +10,16 @@ module Watchable
     self
   end
 
-  def on event, callable = nil, &block
-    watchers[event] << (callable || block)
+  def on event, callable = Proc.new
+    watchers[event] << callable
 
     self
   end
 
-  def once event, callable = nil, &block
+  def once event, callable = Proc.new
     wrapper = lambda do |*args|
       off event, wrapper
-      (callable || block).call *args
+      callable.call *args
     end
 
     on event, wrapper

@@ -1,0 +1,15 @@
+require "kicker/utils"
+
+process do |files|
+  if files.any? { |f| /\.rb$/ =~ f }
+    execute "rake test"
+  end
+
+  files.clear
+end
+
+module Kicker::Utils
+  def log(message)
+    nil
+  end
+end

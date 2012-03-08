@@ -31,11 +31,6 @@ describe Watchable do
       @obj.fire :foo
     end
 
-    it "ignores nil watchers" do
-      @obj.on :foo, nil
-      @obj.fire :foo
-    end
-
     it "returns the watchable" do
       assert_same @obj, @obj.fire(:foo)
     end

@@ -90,6 +90,11 @@ describe Watchable do
       assert_equal [b], @obj.watchers[:foo]
     end
 
+    it "can register for all events" do
+      @obj.on :all, mock { expects(:call).with :foo, :bar }
+      @obj.fire :foo, :bar
+    end
+
     it "returns the watchable" do
       assert_same @obj, @obj.on(:foo) {}
     end

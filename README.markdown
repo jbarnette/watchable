@@ -58,6 +58,25 @@ frob.fire :twiddle, "John"
     (not that there's anything wrong with that)
     { :called! => ["John"] }
 
+### Watching Everything
+
+Want to see every event? Register for `:all`. The first argument will
+be the name of the fired event.
+
+```ruby
+frob = Frob.new
+
+frob.on :all do |event, culprit|
+  p :fired => [event, culprit]
+end
+
+frob.fire :foo, "John"
+```
+
+#### Result
+
+    {:fired => [:foo, "John"]}
+
 ### Watching Once
 
 Only want to be notified the first time something happens? `once` is

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Watchable : A simple event/notification mixin for Ruby." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Watchable</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jbarnette/watchable">Fork Me on GitHub</a>
+
+          <h1 id="project_title">Watchable</h1>
+          <h2 id="project_tagline">A simple event/notification mixin for Ruby.</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/jbarnette/watchable/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/jbarnette/watchable/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This is code I've had floating around for a few years now, but I've
+also incorporated a few extras from node.js' <a href="http://nodejs.org/api/events.html#events_class_events_eventemitter">EventEmitter</a>,
+<a href="http://api.jquery.com/on">jQuery</a>, and <a href="http://documentcloud.github.com/backbone/#Events">Backbone.Events</a>.</p>
+
+<h3>Examples</h3>
+
+<h4>Fixtures</h4>
+
+<div class="highlight">
+<pre><span class="nb">require</span> <span class="s2">"watchable"</span>
+
+<span class="k">class</span> <span class="nc">Frob</span>
+  <span class="kp">include</span> <span class="no">Watchable</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Callable</span>
+  <span class="k">def</span> <span class="nf">call</span> <span class="o">*</span><span class="n">args</span>
+    <span class="nb">p</span> <span class="ss">:called!</span> <span class="o">=&gt;</span> <span class="n">args</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h4>Watching and Firing</h4>
+
+<p>Events can have any number of watchers. Each watcher will be called
+in order, and any args provided when the event is fired will be passed
+along. Watchers will most commonly be blocks, but any object that
+responds to <code>call</code> can be used instead.</p>
+
+<div class="highlight">
+<pre><span class="n">frob</span> <span class="o">=</span> <span class="no">Frob</span><span class="o">.</span><span class="n">new</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">on</span> <span class="ss">:twiddle</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> twiddled the frob!"</span>
+<span class="k">end</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">on</span> <span class="ss">:twiddle</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="s2">"(not that there's anything wrong with that)"</span>
+<span class="k">end</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">on</span> <span class="ss">:twiddle</span><span class="p">,</span> <span class="no">Callable</span><span class="o">.</span><span class="n">new</span>
+<span class="n">frob</span><span class="o">.</span><span class="n">fire</span> <span class="ss">:twiddle</span><span class="p">,</span> <span class="s2">"John"</span>
+</pre>
+</div>
+
+
+<h5>Result</h5>
+
+<pre><code>John twiddled the frob!
+(not that there's anything wrong with that)
+{ :called! =&gt; ["John"] }
+</code></pre>
+
+<h4>Watching Everything</h4>
+
+<p>Want to see every event? Register for <code>:all</code>. The first argument will
+be the name of the fired event.</p>
+
+<div class="highlight">
+<pre><span class="n">frob</span> <span class="o">=</span> <span class="no">Frob</span><span class="o">.</span><span class="n">new</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">on</span> <span class="ss">:all</span> <span class="k">do</span> <span class="o">|</span><span class="n">event</span><span class="p">,</span> <span class="n">culprit</span><span class="o">|</span>
+  <span class="nb">p</span> <span class="ss">:fired</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="n">event</span><span class="p">,</span> <span class="n">culprit</span><span class="o">]</span>
+<span class="k">end</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">fire</span> <span class="ss">:foo</span><span class="p">,</span> <span class="s2">"John"</span>
+</pre>
+</div>
+
+
+<h5>Result</h5>
+
+<pre><code>{:fired =&gt; [:foo, "John"]}
+</code></pre>
+
+<h4>Watching Once</h4>
+
+<p>Only want to be notified the first time something happens? <code>once</code> is
+like <code>on</code>, but fickle.</p>
+
+<div class="highlight">
+<pre><span class="n">frob</span> <span class="o">=</span> <span class="no">Frob</span><span class="o">.</span><span class="n">new</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">once</span> <span class="ss">:twiddle</span> <span class="k">do</span>
+  <span class="nb">p</span> <span class="ss">:twiddled!</span>
+<span class="k">end</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">fire</span> <span class="ss">:twiddle</span>
+<span class="n">frob</span><span class="o">.</span><span class="n">fire</span> <span class="ss">:twiddle</span>
+</pre>
+</div>
+
+
+<h5>Result</h5>
+
+<pre><code>:twiddled!
+</code></pre>
+
+<h4>Unwatching</h4>
+
+<p>Specific blocks or callable objects can be removed from an event's
+watchers, or all the event's watchers can be removed.</p>
+
+<div class="highlight">
+<pre><span class="n">b</span>    <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{}</span>
+<span class="n">frob</span> <span class="o">=</span> <span class="no">Frob</span><span class="o">.</span><span class="n">new</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">on</span> <span class="ss">:twiddle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">b</span>
+
+<span class="n">frob</span><span class="o">.</span><span class="n">off</span> <span class="ss">:twiddle</span><span class="p">,</span> <span class="n">b</span>  <span class="c1"># removes the 'b' watcher, same as frob.off :twiddle, &amp;b</span>
+<span class="n">frob</span><span class="o">.</span><span class="n">off</span> <span class="ss">:twiddle</span>     <span class="c1"># removes all watchers for the 'twiddle' event</span>
+</pre>
+</div>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Watchable &copy; 2011 <a href="https://github.com/jbarnette">jbarnette</a></p>
+        <p>Published using <a href="http://pages.github.com">GitHub Pages</a> with the Slate Theme</p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

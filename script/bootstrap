@@ -1,0 +1,7 @@
+#!/bin/sh
+# Make sure development dependencies are available.
+
+set -e
+
+cd $(dirname "$0")/..
+bundle install --binstubs .bundle/binstubs --path .bundle --quiet "$@"

@@ -1,0 +1,9 @@
+#!/bin/sh
+# Test this project.
+
+set -e
+
+cd $(dirname "$0")/..
+
+script/bootstrap && ruby -rubygems \
+  -e 'Dir["test/**/*_test.rb"].each { |f| load f }'

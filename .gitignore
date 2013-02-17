@@ -1,3 +1,4 @@
-/.rbenv-version
+/.bundle
+/.ruby-version
+/Gemfile.lock
 /pkg
-Gemfile.lock

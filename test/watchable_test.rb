@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require "mocha"
+require "mocha/setup"
 require "watchable"
 
 describe Watchable do

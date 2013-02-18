@@ -58,8 +58,8 @@ frob.fire :twiddle, "John"
 
 ### Watching Everything
 
-Want to see every event? Register for `:all`. The first argument will
-be the name of the fired event.
+Want to see every event fired by an object? Register for `:all`. The
+first argument will be the name of the fired event.
 
 ```ruby
 frob = Frob.new
@@ -74,6 +74,25 @@ frob.fire :foo, "John"
 #### Result
 
     {:fired => [:foo, "John"]}
+
+### Watching Every Instance of a Class
+
+To see all events fired by instances of a class, register for events
+on the class constant. The first argument will be the name of the
+event, and the second the instance that fired it.
+
+```ruby
+Frob.on :foo do |event, instance, culprit|
+  p :fired => [event, instance, culprit]
+end
+
+frob = Frob.new
+frob.fire :foo, "John"
+```
+
+#### Result
+
+    {:fired => [:foo, #<Frob:0x007f9828e9e608>, "John"]}
 
 ### Watching Once
 

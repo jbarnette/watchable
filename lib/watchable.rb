@@ -1,11 +1,19 @@
 module Watchable
+  def self.included(target)
+    target.extend self
+  end
+
   def watchers
-    @watchers ||= Hash.new { |h, k| h[k] = [] }
+    @watchers ||= super.dup rescue Hash.new { |h, k| h[k] = [] }
   end
 
   def fire event, *args
     watchers[event].each { |w| w.call *args        }
     watchers[:all].each  { |w| w.call event, *args }
+
+    if self.class.respond_to? :fire
+      self.class.fire event, self, *args
+    end
 
     self
   end
@@ -31,4 +39,6 @@ module Watchable
 
     self
   end
+
+  extend self
 end

@@ -3,10 +3,13 @@ require "minitest/autorun"
 require "mocha/setup"
 require "watchable"
 
+class WatchableExample
+  include Watchable
+end
+
 describe Watchable do
   before do
-    @obj = Object.new
-    @obj.extend Watchable
+    @obj = WatchableExample.new
   end
 
   it "has an empty list of watchers by default" do
